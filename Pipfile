@@ -5,5 +5,10 @@ name = "pypi"
 
 [packages]
 pandas = "*"
+requests = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
+
+[version]
+python_version = "3.8"
