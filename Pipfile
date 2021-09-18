@@ -5,5 +5,7 @@ name = "pypi"
 
 [packages]
 pandas = "*"
+pipfile = "*"
+yfinance = "*"
 
 [dev-packages]
