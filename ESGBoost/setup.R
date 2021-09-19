@@ -1,15 +1,18 @@
 library(shiny)
 library(xgboost)
 library(caret)
+library(e1071)
 library(tidyverse)
 
 
-### Data CSVs ###
+### Data CSVs & Vars ###
 
 esgdata <- read.csv("https://raw.githubusercontent.com/xinging-birds/EchoSG/main/src/data/esgmodel.csv")
 preprocessed <- read.csv("https://raw.githubusercontent.com/xinging-birds/EchoSG/main/src/data/preprocessed.csv")
 master <- read.csv("https://raw.githubusercontent.com/xinging-birds/EchoSG/main/src/data/master.csv")
 returns <- read.csv("https://raw.githubusercontent.com/xinging-birds/EchoSG/main/src/data/returns.csv")
+# only used because I need tickers for clusters generated in R
+cluster_tickers <- read.csv('https://raw.githubusercontent.com/xinging-birds/EchoSG/main/src/data/clusters.csv')
 
 ### k-means clustering ###
 
@@ -83,8 +86,10 @@ clusterDataset <- function(x, y, k=16) {
   set.seed(1)
   km.out <- kmeans(preprocessed, centers=k)
   p <-preprocessed %>%
+    # cbind(clusters$ticker) %>%
     ggplot(aes_string(x=x, y=y, color="as.factor(km.out$cluster)", size="total")) +
     geom_point() +
+    geom_text(aes(label=cluster_tickers$ticker), hjust=0.5, vjust=-1) +
     theme(legend.position="none") +
     ggtitle(paste("K-Means Clustering (k=", k, ") with ", x, " and ", y, sep=""))
   
@@ -109,15 +114,15 @@ clusterPCA <- function(k=16) {
 # ESG Analysis
 esg.compare <- function(stock, metric) {
   df <- switch(metric,
-               "Highest Education" = education,
-               "Income Distribution" = income,
-               "ESG" = esg,
-               "Environmental Justice Screen Indexes" = ejs)
+               'esg' = esg,
+               'edu' = education,
+               'income' = income,
+               'ejs' = ejs)
   avg <- switch(metric,
-                "Highest Education" = average.education,
-                "Income Distribution" = average.income,
-                "ESG" = average.esg,
-                "Environmental Justice Screen Indexes" = average.ejs)
+                'esg' = average.esg,
+                'edu' = average.education,
+                'income' = average.income,
+                'ejs' = average.ejs)
   
   p <- df %>%
     filter(longName == stock) %>%
@@ -155,8 +160,7 @@ bst_train <- function(ratio, nrounds, lambda, alpha) {
   pred <- predict(bst, as.matrix(xtest))
   predictions = as.numeric(pred > 0.5)
   acc <- mean(predictions == ytest)
-  print(acc)
-  
+
   confusionMatrix(as.factor(predictions), as.factor(ytest))$table
   table <- data.frame(confusionMatrix(as.factor(predictions), as.factor(ytest))$table)
   

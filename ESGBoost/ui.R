@@ -1,63 +1,67 @@
 library(shiny)
 
-# Define UI for application that draws a histogram
-fluidPage(
-
-    # Application title
-    titlePanel("ESGBoost"),
-
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            helpText("Analyze environmental, social, and governance risk within
-                     the S&P 500."),
-            h2("Responsible Investing!"),
-            selectInput("option",
-                        label="Action:",
-                        choices=list("Clustering",
-                                     "ESG Analysis",
-                                     "XGBoost"),
-                        selected="Clustering"),
-            conditionalPanel(
-                condition="input.option == 'Clustering'",
-                radioButtons("clusterData",
-                             label="Variable Choice",
-                             choices=list("Original"=1,
-                                          "Principal Components"=2),
-                             selected=2),
-                conditionalPanel(
-                    condition="input.clusterData == 1",
-                    selectInput("clusterX:",
-                                label="x-axis:",
-                                choices=colnames(preprocessed),
-                                selected=colnames(preprocessed)[1]),
-                    selectInput("clusterY:",
-                                label="y-axis:",
-                                choices=colnames(preprocessed),
-                                selected=colnames(preprocessed)[2]),
-                ),
-                sliderInput("k",
-                            "Number of Clusters:",
-                            min = 5,
-                            max = 15,
-                            value = 10)
-            ),
-            conditionalPanel(
-                condition="input.option == 'ESG Analysis'",
+navbarPage(
+    title = "ESGBoost", 
+    tabPanel("ESG Analysis",
+        sidebarLayout(
+            sidebarPanel(
+                h2("Responsible Investing!"),
+                helpText("Analyze environmental, social, and governance risk within
+                         the S&P 500 by looking at individual companies."),
                 selectInput("stock",
                             label="Stock:",
                             choices=master$longName,
                             selected=master$longName[1]),
-                selectInput("esgMetric",
-                            label="Factor:",
-                            choices=list("ESG",
-                                         "Highest Education",
-                                         "Income Distribution",
-                                         "Environmental Justice Screen Indexes"),
-                            selected="ESG")
             ),
-            conditionalPanel(
-                condition="input.option == 'XGBoost'",
+            mainPanel(
+                tabsetPanel(
+                    tabPanel("ESG", plotOutput("esgPlot")),
+                    tabPanel("Highest Education Level", plotOutput("educationPlot")),
+                    tabPanel("Income Distribution", plotOutput("incomePlot")),
+                    tabPanel("Environmental Justice Screen Indexes", plotOutput("ejsPlot"))
+                )
+            )
+        )
+    ), 
+    tabPanel("Clustering",
+        sidebarLayout(
+            sidebarPanel(
+                h2("K-Means Clustering"),
+                helpText("See what clustering can do visually, either applied on the original data or the principal components from PCA."),
+                h4("Original Dataset"),
+                selectInput("clusterX:",
+                            label="x-axis:",
+                            choices=colnames(preprocessed),
+                            selected=colnames(preprocessed)[1]),
+                selectInput("clusterY:",
+                            label="y-axis:",
+                            choices=colnames(preprocessed),
+                            selected=colnames(preprocessed)[2]),
+                sliderInput("datak",
+                            "Number of Clusters for Original:",
+                            min = 5,
+                            max = 15,
+                            value = 10),
+                h4("Principal Components"),
+                sliderInput("pck",
+                            "Number of Clusters for PCs:",
+                            min = 5,
+                            max = 15,
+                            value = 10)
+            ),
+            mainPanel(
+                tabsetPanel(
+                    tabPanel("Original Dataset", plotOutput("originalClusterPlot")),
+                    tabPanel("Principal Components", plotOutput("pcClusterPlot"))
+                )
+            )
+        )
+    ),
+    tabPanel("XGBoost",
+        sidebarLayout(
+            sidebarPanel(
+                h2("XGBoost: Beat SPY with ESG"),
+                helpText("Play around with parameters to try to best fit a model."),
                 sliderInput("ratio",
                             label="Train-to-Test Split:",
                             min=0.1,
@@ -80,13 +84,13 @@ fluidPage(
                             min=0.01,
                             max=5,
                             value=0.1,
-                            step=0.01)
+                            step=0.01),
+            ),
+            mainPanel(
+                plotOutput("confusionMatrix")
             )
-        ),
-
-        # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("plot")
         )
+    ),
+    navbarMenu("More", tabPanel(a("GitHub", href="https://github.com/xinging-birds/ESGBoost", target="_blank"))
     )
 )

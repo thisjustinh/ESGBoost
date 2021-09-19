@@ -41,3 +41,11 @@ The R Shiny database offers different variable combinations and a slider to cont
 Finally, XGBoost. Here, we were curious if ESG data would be able to help classify a specific stock's quarterly returns versus the S&P 500 average (in this case, we substitute with SPY quarterly returns). Using the ESG factors, including the controversy level, and a binary variable indicating whether or not the stock beat SPY in the last quarter, we aim to perform binary classification. In the R Shiny app, there are sliders that allow control over certain hyperparameters: how many times the model passes through, the L2-penalty on the weights, and the L1-penalty on the weights.
 
 XGBoost was performed in R using the `xgboost` library, although we experimented with Tangram's CLI experience.
+
+## References
+
+- [Scraping Financial (ESG) Data with Python](https://curt-beck1254.medium.com/scrapping-financial-esg-data-with-python-99d171a12c51)
+- [ECHO Detailed Facility Report (API docs)](https://echo.epa.gov/tools/web-services/detailed-facility-report#/Detailed%20Facility%20Report/post_dfr_rest_services_get_dfr)
+- [FRS Rest Services (API docs)](https://www.epa.gov/frs/frs-rest-services)
+- [XGBoost R Tutorial](https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html)
+- [R Shiny Cheat Sheet](https://shiny.rstudio.com/images/shiny-cheatsheet.pdf)
