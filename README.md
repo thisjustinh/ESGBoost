@@ -2,6 +2,8 @@
 
 [R Shiny](https://superbia-vice.shinyapps.io/ESGBoost/) ESG and ECHO-based information hub for accessible, long-term growth investing! Made at HackMIT 2021, the app provides sustainability information about certain companies in the S&P 500.
 
+> Won Best Hack for Environmental Sustainability Investing sponsored by Arrowstreet Capital
+
 ## Introduction
 
 ESGBoost is a sustainability information hub for the curious investor gazing beyond the quarterly financial statements and Reddit posts. If you're going beyond the traditional fundamentals, we welcome you to explore the statistics behind a company's (possibly poor) environmental impact, social demographic, and compliance (I bet you thought I would say governance!) history&mdash;at least, in my sales pitch (:
