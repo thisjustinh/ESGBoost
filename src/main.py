@@ -20,8 +20,9 @@ zips = zips.drop(columns=['zip'])
 returns = pd.read_csv('csv/returns.csv')
 returns = returns.drop(columns=['lag0','lag1','lag2','lag3'])
 
-# Perfect!
+# Drop NA rows
 esg = pd.read_csv('csv/esg.csv')
+esg = esg.dropna()
 
 # Clean data
 echo = pd.read_csv('csv/echo.csv')
@@ -35,4 +36,5 @@ for problem in problems:
 master = pd.merge(zips, esg, on='ticker')
 master = pd.merge(master, echo, on='ticker')
 master = pd.merge(master, returns, on='ticker')
-print(master.dtypes)
+
+master.to_csv('csv/master.csv')
