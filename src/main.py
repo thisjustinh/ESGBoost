@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+import json
 
 
 def clean_pct(stat: str):
@@ -37,5 +38,14 @@ master = pd.merge(master, echo, on='ticker')
 master = pd.merge(master, returns, on='ticker')
 master = master.dropna()
 master.to_csv('data/master.csv', index=False)
+
+# Name to Ticker
+convert = [{row['longName']: row['ticker']} for index, row in master.iterrows()]
+with open('data/convert.json', 'w') as f:
+    f.write(json.dumps(convert))
+
+# JSONs
 master = master.set_index('longName')
-master.to_json('data/master.json', orient='index')
+master.to_json('data/longName.json', orient='index')
+master = master.set_index('ticker')
+master.to_json('data/ticker.json', orient='index')
