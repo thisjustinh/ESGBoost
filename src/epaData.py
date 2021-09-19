@@ -1,38 +1,29 @@
 import yfinance as yf
 import pandas as pd
-import csv
 import requests
 
 def outputZipandLongName():
-    tickerList = None
-    with open('sp500.csv', newline='') as csvfile:
-        spReader = csv.reader(csvfile, delimiter=",")
-        tickerList = [row[0] for row in spReader]
+    tickers = pd.read_csv('sp500.csv')['Symbol'].tolist()
 
     zipList = []
-    for ticker in tickerList:
-        info = yf.Ticker(ticker).info
-        if "zip" in info and "longName" in info and info != None:
-            tickTuple = (info["zip"], info["longName"])
-            zipList.append(tickTuple)
+    yf_out = yf.Tickers(' '.join(tickers))
+    i = 0
 
-    df = pd.DataFrame(zipList, columns=["Zip", "Long Name"])
-    df.to_csv("zip.csv", index=False)
+    for ticker in tickers:
+        info = yf_out.tickers[ticker].info
+        if "zip" in info and "longName" in info and info is not None:
+            tickNest = [ticker, info['longName'], info['zip']]
+            if 'logo_url' in info:
+                tickNest.append(info["logo_url"])
+            if 'regularMarketPrice' in info:
+                tickNest.append(info['regularMarketPrice'])
+            zipList.append(tickNest)
+        i += 1
+        print(ticker, f'{i}/505')
 
-def extractRegistryId():
-    zips = []
-    names = []
-    with open('zip.csv', newline='') as csvfile:
-        zipReader = csv.reader(csvfile, delimiter=",")
-        data = [(row[0], row[1]) for row in zipReader]
-    
-    for point in data:
-        apiLink = "https://ofmpub.epa.gov/frs_public2/frs_rest_services.get_facilities?facility_name=" + point[1] + "&zip_code=" + point[0] + "&program_output=yes&output=JSON"
-        response = requests.get(apiLink)
-        print(response.json())
-
+    df = pd.DataFrame(zipList, columns=["ticker","longName", "zip", "logo_url", "close_price"])
+    df.to_csv("zip-copy.csv", index=False)
 
 outputZipandLongName()
-extractRegistryId()
 
 
