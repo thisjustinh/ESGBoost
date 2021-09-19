@@ -15,6 +15,8 @@ def preprocess(df):
 
 
 def supervised_split(df, ratio):
+    df = df.drop(columns = ['beat1', 'beat2', 'beat3'])
+
     train = df.sample(frac=ratio)
     test = df.drop(train.index)
     train.to_csv('data/train.csv')
@@ -25,12 +27,19 @@ def supervised_split(df, ratio):
 if __name__ == '__main__':
     master = pd.read_csv('data/master.csv')
     preprocessed = preprocess(master)
-    tickers = preprocessed['ticker'].copy()
+    tickers = preprocessed[['ticker']].copy()
     preprocessed = preprocessed.drop(columns={'ticker'})
 
     # to be used with Tangram!
-    train, test = supervised_split(preprocessed, 0.7)
+    # train, test = supervised_split(preprocessed, 0.7)
+    # echosg = preprocessed.drop(columns = ['beat1', 'beat2', 'beat3'])
+    echosg = preprocessed[['income_25_50','income_p75', 'bsba', 'beat0']].copy()
+    echosg.to_csv('data/echosg.csv', index=False)
+
 
     kmeans = KMeans(n_clusters=10).fit(preprocessed)
     clusters = pd.DataFrame({'cluster': kmeans.labels_})
-    pd.concat([tickers, clusters], axis=1).to_csv('data/clusters.csv', index=False)
+    clusters = pd.concat([tickers.reset_index(drop=True), clusters], axis=1)
+    clusters.to_csv('data/clusters.csv', index=False)
+    clusters = clusters.set_index('ticker')
+    clusters.to_json('data/clusters.json', orient='index')
