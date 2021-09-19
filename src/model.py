@@ -36,7 +36,19 @@ if __name__ == '__main__':
     echosg = preprocessed[['income_25_50','income_p75', 'bsba', 'beat0']].copy()
     echosg.to_csv('data/echosg.csv', index=False)
 
+    # Alternative ESG data for Tangram!
+    returns = pd.read_csv('data/returns.csv')
+    esg = pd.read_csv('data/esg.csv')
+    esg = esg.dropna()
+    esgtics = esg[['ticker']].copy()
+    esg = esg.drop(columns=['ticker', 'total'])
+    esg = (esg-esg.mean()) / esg.std()
+    esg = pd.concat([esgtics, esg], axis=1)
+    esgmodel = pd.merge(esg, returns.filter(['ticker','beat0'], axis=1), on='ticker')
+    esgmodel = esgmodel.drop(columns='ticker')
+    esgmodel.to_csv('data/esgmodel.csv', index=False)
 
+    # k-means clustering
     kmeans = KMeans(n_clusters=10).fit(preprocessed)
     clusters = pd.DataFrame({'cluster': kmeans.labels_})
     clusters = pd.concat([tickers.reset_index(drop=True), clusters], axis=1)
