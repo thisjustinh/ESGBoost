@@ -19,7 +19,7 @@ code {
 
 .App {
   height: 100vh;
-  background-image: url("https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
+  /* background-image: url("https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"); */
   background-size: cover;
   position: relative;
   display: flex;
@@ -46,20 +46,20 @@ code {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-}
+} */
 
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  /* display: flex; */
+  /* flex-direction: column;
+  align-items: left;
+  justify-content: center; */
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-link {
+/* .App-link {
   color: #61dafb;
 }
 

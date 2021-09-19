@@ -6,7 +6,12 @@ example data. USA states.
 the componenet requires an array of object with a property "title".
   []{title: string}
 */
-import { states } from "./states.data";
+import { states } from "./DAO/states.data";
+
+// Global vars
+
+// STRING -- currently picked company
+var currentCompany = null
 
 function App() {
   const [filtered, setFiltered] = useState([]);
@@ -24,6 +29,8 @@ function App() {
     }
   };
 
+// SEARCH FUNCTIONS
+
   /*
     here you define what happens when you press enter. 
     note that the data that is passed to the list element, is stored in the data-set attribute.
@@ -31,6 +38,7 @@ function App() {
   const enterHandler = e => {
     const searchitem = JSON.parse(e.target.dataset.searchitem);
     console.log("Enter pressed", searchitem);
+    currentCompany = searchitem.name    
   };
 
   // same as above
@@ -56,6 +64,16 @@ function App() {
     document.addEventListener("click", clickOutsideHandler);
     return () => document.removeEventListener("click", clickOutsideHandler);
   }, []);
+
+
+
+  // DISPLAY FUNCTION COMPONENTS
+  function CoTitle(){
+    return currentCompany != null ? (
+        <h1>{currentCompany}</h1>
+    ) : null
+  }
+  
 
   /* the style defined here is passed to child elements
   note: children inherit some styles like font size, color, line-height...
@@ -107,6 +125,7 @@ function App() {
         onClick={clickHandler} // applies only to the list "li" element
         onEsc={escHandler} // applies to the entire component
       />
+      <CoTitle />
     </div>
   );
 }
