@@ -3,6 +3,7 @@
 [R Shiny](https://superbia-vice.shinyapps.io/ESGBoost/) ESG and ECHO-based information hub for accessible, long-term growth investing! Made at HackMIT 2021, the app provides sustainability information about certain companies in the S&P 500.
 
 > Won Best Hack for Environmental Sustainability Investing sponsored by Arrowstreet Capital
+
 > Won Best Financial Hack sponsored by Capital One
 
 ## Introduction
